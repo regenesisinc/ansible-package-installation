@@ -1,0 +1,23 @@
+---
+- name: Install Chrony Package
+  hosts: node1
+  become: true
+  tasks:
+    - name: Ensure Package Installed
+      ansible-builtin.dnf
+        name: chrony
+        state: latest
+    - name: Copy config to node
+      ansible.builtin.copy:
+        src: chrony.conf.sample
+        dest: /etc/chrony.conf
+        mode: 644
+        owner: root
+        group: root
+
+    - name: Enable chronyd service
+      ansible.builtin.systemd:
+        name: chronyd
+        state: started
+        enable: yes
+
